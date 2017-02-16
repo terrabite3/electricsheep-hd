@@ -36,6 +36,8 @@ for FLAME in genomes/*.flam3; do
   env template=anim_template.flame sequence=tmp.flame nframes=$NFRAMES flam3-genome  > animated_genomes/${OLD_ID}_${ID}.flame
 
   if  ! [[ -f movies/$OLD_ID.avi ]] ; then
+    # Touch the output file so other nodes don't attempt it
+    touch movies/$OLD_ID.avi
     # Make stills out of the animated flame file, first the first part of the animation
     mkdir -p frames/${OLD_ID}/ 2>/dev/null
     let END=$NFRAMES-1
@@ -48,6 +50,8 @@ for FLAME in genomes/*.flam3; do
   fi
 
   if ! [[ -f movies/${OLD_ID}_${ID}.avi ]]; then
+    # Touch the output file so other nodes don't attempt it
+    touch movies/${OLD_ID}_${ID}.avi
     # Now make the transition part
     mkdir -p frames/${OLD_ID}_${ID}/ 2>/dev/null
     let END=$NFRAMES*2
