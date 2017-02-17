@@ -7,7 +7,6 @@ install_dependencies:
 clean:
 	rm -rf animated_genomes/
 	rm -rf frames/
-	rm -rf movies/
 
 playlist:
 	bash playlist.sh
