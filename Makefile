@@ -9,5 +9,8 @@ clean:
 	rm -rf frames/
 	rm -rf movies/
 
+playlist:
+	bash playlist.sh
+
 play:
-	mplayer -playlist playlist.m3u
+	mplayer -playlist movies/playlist.m3u

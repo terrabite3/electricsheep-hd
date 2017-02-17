@@ -12,7 +12,6 @@ FLAME=""
 [ ! -d movies ] && echo 'movies share not created' && exit 1
 #mkdir movies 2>/dev/null
 mkdir animated_genomes 2>/dev/null
-echo "#EXTM3U" > playlist.m3u
 
 sed "s/WIDTH/$W/" animated.template | sed "s/HEIGHT/$H/" > anim_template.flame
 
@@ -44,9 +43,6 @@ for FLAME in genomes/*.flam3; do
     env in=animated_genomes/${OLD_ID}_${ID}.flame prefix=frames/$OLD_ID/ format=jpg jpeg=95 begin=0 end=$END flam3-animate
     mencoder mf://frames/$OLD_ID/*.jpg -mf w=$W:h=$H:fps=$FPS:type=jpg -ovc copy -oac copy -o movies/$OLD_ID.avi
     rm -rf frames/$OLD_ID/
-    echo "movies/$OLD_ID.avi" >> playlist.m3u
-    echo "movies/$OLD_ID.avi" >> playlist.m3u
-    echo "movies/$OLD_ID.avi" >> playlist.m3u
   fi
 
   if ! [[ -f movies/${OLD_ID}_${ID}.avi ]]; then
@@ -58,7 +54,6 @@ for FLAME in genomes/*.flam3; do
     env in=animated_genomes/${OLD_ID}_${ID}.flame prefix=frames/${OLD_ID}_${ID}/ format=jpg jpeg=95 begin=$NFRAMES end=$END flam3-animate
     mencoder mf://frames/${OLD_ID}_${ID}/*.jpg -mf w=$W:h=$H:fps=$FPS:type=jpg -ovc copy -oac copy -o movies/${OLD_ID}_${ID}.avi
     rm -rf frames/${OLD_ID}_${ID}/
-    echo "movies/${OLD_ID}_${ID}.avi" >> playlist.m3u
   fi
 
   # Skip making the second part because it becomes the next first part on the subsequent loop
