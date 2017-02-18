@@ -2,6 +2,27 @@
 #
 #
 
+usage () {
+  echo "Usage: $0 [-s skip]" 1>&2
+  echo "    -s skip  :  Skip this many valid avi files, so we don't wait for a slow node"
+  exit 1
+}
+
+SKIP=0
+
+while getopts ":s:" opt; do
+  case "${opt}" in
+    s)
+      SKIP=${OPTARG}
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+
+
+
 NFRAMES=360
 W=1920
 H=1080
@@ -12,14 +33,22 @@ FPS=30
 # $3 is the end frame
 render () {
   if ! [[ -f movies/$1.avi ]]; then
-    # Touch the output file so other nodes don't attempt it
-    touch movies/$1.avi
-    # Make stills out of the animated flame file, first the first part of the animation
-    mkdir -p frames/$1/ 
 
-    env in=animated_genomes/$1.flame prefix=frames/$1/ format=jpg jpeg=95 begin=$2 end=$3 flam3-animate
-    mencoder mf://frames/$1/*.jpg -mf w=$W:h=$H:fps=$FPS:type=jpg -ovc copy -oac copy -o movies/$1.avi
-    rm -rf frames/$1/
+    # The skip feature allows a slow node to work on video far in advance
+    # This way there won't be a gap in the video while we wait for the slow node
+    if [[ $SKIP -gt 0 ]]; then
+      SKIP=$SKIP-1
+      echo "Skipping $1"
+    else
+      # Touch the output file so other nodes don't attempt it
+      touch movies/$1.avi
+      # Make stills out of the animated flame file, first the first part of the animation
+      mkdir -p frames/$1/ 
+
+      env in=animated_genomes/$1.flame prefix=frames/$1/ format=jpg jpeg=95 begin=$2 end=$3 flam3-animate
+      mencoder mf://frames/$1/*.jpg -mf w=$W:h=$H:fps=$FPS:type=jpg -ovc copy -oac copy -o movies/$1.avi
+      rm -rf frames/$1/
+    fi
   fi
 }
 
