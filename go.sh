@@ -32,30 +32,25 @@ mkdir animated_genomes 2>/dev/null
 sed "s/WIDTH/$W/" animated.template | sed "s/HEIGHT/$H/" > anim_template.flame
 
 FLAME_LIST=genomes/*.flam3
-# Add the first to the end to get a transition from the last back to the first
-FLAME_LIST=$FLAME_LIST ${awk '{print$1;}'}
+# Set the last flame as the previous to create a loop transition
+OLD_FLAME=`echo $FLAME_LIST | awk '{ print $NF }'`
 
 for FLAME in $FLAME_LIST; do
 
   ID=`basename $FLAME | sed 's/.flam3//'`
+  OLD_ID=`basename $OLD_FLAME | sed 's/.flam3//'`
 
   # Merge old and new flames into a single file to make the animation from
   echo '<flames name="Batch">' > tmp.flame
   cat $OLD_FLAME $FLAME  >> tmp.flame
   echo '</flames>' >> tmp.flame
 
-  if [[ $OLD_ID != "" ]]; then
-    BOTH_ID=${OLD_ID}_${ID}
-  else
-    BOTH_ID=$ID
-  fi
+  BOTH_ID=${OLD_ID}_${ID}
 
   # Create a new flame file with enough frames to loop
   env template=anim_template.flame sequence=tmp.flame nframes=$NFRAMES flam3-genome  > animated_genomes/$BOTH_ID.flame
 
-  if [[ $OLD_ID != "" ]]; then
-    render $BOTH_ID  $NFRAMES  2*$NFRAMES-1
-  fi
+  render $BOTH_ID  $NFRAMES  2*$NFRAMES-1
 
   render $ID  0  $NFRAMES-1
 
@@ -65,5 +60,3 @@ for FLAME in $FLAME_LIST; do
 
 done
 
-# Render the transition back to where we started
-render 
