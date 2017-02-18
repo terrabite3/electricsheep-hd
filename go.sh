@@ -15,7 +15,7 @@ render () {
     # Touch the output file so other nodes don't attempt it
     touch movies/$1.avi
     # Make stills out of the animated flame file, first the first part of the animation
-    mkdir -p frames/$1/ 2>/dev/null
+    mkdir -p frames/$1/ 
 
     env in=animated_genomes/$1.flame prefix=frames/$1/ format=jpg jpeg=95 begin=$2 end=$3 flam3-animate
     mencoder mf://frames/$1/*.jpg -mf w=$W:h=$H:fps=$FPS:type=jpg -ovc copy -oac copy -o movies/$1.avi
@@ -50,7 +50,8 @@ for FLAME in $FLAME_LIST; do
   # Create a new flame file with enough frames to loop
   env template=anim_template.flame sequence=tmp.flame nframes=$NFRAMES flam3-genome  > animated_genomes/$BOTH_ID.flame
 
-  render $BOTH_ID  $NFRAMES  2*$NFRAMES-1
+  END=$(($NFRAMES + $NFRAMES - 1))
+  render $BOTH_ID  $NFRAMES  $END 
 
   render $ID  0  $NFRAMES-1
 
