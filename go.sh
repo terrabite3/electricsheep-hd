@@ -33,8 +33,9 @@ H=1080
 FPS=30
 
 # $1 is the ID
-# $2 is the start frame
-# $3 is the end frame
+# $2 is the animated flame
+# $3 is the start frame
+# $4 is the end frame
 render () {
   if ! [[ -f movies/$1.avi ]]; then
 
@@ -49,7 +50,7 @@ render () {
       # Make stills out of the animated flame file, first the first part of the animation
       mkdir -p frames/$1/ 
 
-      try env in=animated_genomes/$1.flame prefix=frames/$1/ format=jpg jpeg=95 begin=$2 end=$3 flam3-animate
+      try env in=animated_genomes/$2.flame prefix=frames/$1/ format=jpg jpeg=95 begin=$3 end=$4 flam3-animate
       try mencoder mf://frames/$1/*.jpg -mf w=$W:h=$H:fps=$FPS:type=jpg -ovc copy -oac copy -o movies/$1.avi
       rm -rf frames/$1/
     fi
@@ -84,9 +85,9 @@ for FLAME in $FLAME_LIST; do
   try env template=anim_template.flame sequence=tmp.flame nframes=$NFRAMES flam3-genome  > animated_genomes/$BOTH_ID.flame
 
   END=$(($NFRAMES + $NFRAMES - 1))
-  render $BOTH_ID  $NFRAMES  $END 
+  render $BOTH_ID  $BOTH_ID  $NFRAMES  $END 
 
-  render $ID  0  $NFRAMES-1
+  render $ID  $BOTH_ID  0  $NFRAMES-1
 
 
   OLD_FLAME=$FLAME
