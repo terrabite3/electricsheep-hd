@@ -11,7 +11,7 @@ FPS=30
 # $2 is the start frame
 # $3 is the end frame
 render () {
-  if ! [[ -f movies/$1 ]]; then
+  if ! [[ -f movies/$1.avi ]]; then
     # Touch the output file so other nodes don't attempt it
     touch movies/$1.avi
     # Make stills out of the animated flame file, first the first part of the animation
