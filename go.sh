@@ -2,6 +2,10 @@
 #
 #
 
+yell() { echo "$0: $*" >&2; }
+die() { yell "$*"; exit 111; }
+try() { "$@" || die "cannot $*"; }
+
 usage () {
   echo "Usage: $0 [-s skip]" 1>&2
   echo "    -s skip  :  Skip this many valid avi files, so we don't wait for a slow node"
@@ -45,8 +49,8 @@ render () {
       # Make stills out of the animated flame file, first the first part of the animation
       mkdir -p frames/$1/ 
 
-      env in=animated_genomes/$1.flame prefix=frames/$1/ format=jpg jpeg=95 begin=$2 end=$3 flam3-animate
-      mencoder mf://frames/$1/*.jpg -mf w=$W:h=$H:fps=$FPS:type=jpg -ovc copy -oac copy -o movies/$1.avi
+      try env in=animated_genomes/$1.flame prefix=frames/$1/ format=jpg jpeg=95 begin=$2 end=$3 flam3-animate
+      try mencoder mf://frames/$1/*.jpg -mf w=$W:h=$H:fps=$FPS:type=jpg -ovc copy -oac copy -o movies/$1.avi
       rm -rf frames/$1/
     fi
   fi
@@ -77,7 +81,7 @@ for FLAME in $FLAME_LIST; do
   BOTH_ID=${OLD_ID}_${ID}
 
   # Create a new flame file with enough frames to loop
-  env template=anim_template.flame sequence=tmp.flame nframes=$NFRAMES flam3-genome  > animated_genomes/$BOTH_ID.flame
+  try env template=anim_template.flame sequence=tmp.flame nframes=$NFRAMES flam3-genome  > animated_genomes/$BOTH_ID.flame
 
   END=$(($NFRAMES + $NFRAMES - 1))
   render $BOTH_ID  $NFRAMES  $END 
