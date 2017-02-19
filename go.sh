@@ -95,6 +95,8 @@ for FLAME in $FLAME_LIST; do
 
   
   if [[ -f movies/$ID.avi ]] && [[ -f movies/$BOTH_ID.avi ]]; then
+    OLD_FLAME=$FLAME
+    OLD_ID=$ID
     continue
   fi
   
