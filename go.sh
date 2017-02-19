@@ -6,6 +6,15 @@ yell() { echo "$0: $*" >&2; }
 die() { yell "$*"; exit 111; }
 try() { "$@" || die "cannot $*"; }
 
+
+trap ctrl_c INT
+function ctrl_c() {
+  if [[ -f $IN_PROGRESS ]] && [[ $(stat -c %s $IN_PROGRESS) -eq 0 ]]; then
+    echo "Deleting $IN_PROGRESS"
+    rm $IN_PROGRESS
+  fi
+}
+
 usage () {
   echo "Usage: $0 [-s skip]" 1>&2
   echo "    -s skip  :  Skip this many valid avi files, so we don't wait for a slow node"
@@ -45,8 +54,10 @@ render () {
       SKIP=$SKIP-1
       echo "Skipping $1"
     else
+      echo "Starting $1"
       # Touch the output file so other nodes don't attempt it
       touch movies/$1.avi
+      $IN_PROGRESS=movies/$1.avi
       # Make stills out of the animated flame file, first the first part of the animation
       mkdir -p frames/$1/ 
 
