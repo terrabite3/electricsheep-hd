@@ -97,6 +97,15 @@ for FLAME in $FLAME_LIST; do
   if [[ -f movies/$ID.avi ]] && [[ -f movies/$BOTH_ID.avi ]]; then
     continue
   fi
+  
+  # The skip feature allows a slow node to work on video far in advance
+  # This way there won't be a gap in the video while we wait for the slow node
+  if [[ $SKIP -gt 1 ]]; then
+    SKIP=$SKIP-2
+    echo "Skipping $BOTH_ID"
+    echo "Skipping $ID"
+    continue
+  fi
 
   # Create a new flame file with enough frames to loop
   try env template=anim_template.flame sequence=tmp.flame nframes=$NFRAMES flam3-genome  > animated_genomes/$BOTH_ID.flame
@@ -106,6 +115,7 @@ for FLAME in $FLAME_LIST; do
 
   render $ID  $BOTH_ID  0  $NFRAMES-1
 
+  rm animated_genomes/$BOTH_ID.flame
 
   OLD_FLAME=$FLAME
   OLD_ID=$ID
