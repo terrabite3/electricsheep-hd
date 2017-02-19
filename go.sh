@@ -104,6 +104,9 @@ for FLAME in $FLAME_LIST; do
     SKIP=$SKIP-2
     echo "Skipping $BOTH_ID"
     echo "Skipping $ID"
+
+    OLD_FLAME=$FLAME
+    OLD_ID=$ID
     continue
   fi
 
