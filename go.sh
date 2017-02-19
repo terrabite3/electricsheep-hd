@@ -2,18 +2,19 @@
 #
 #
 
-yell() { echo "$0: $*" >&2; }
-die() { yell "$*"; exit 111; }
-try() { "$@" || die "cannot $*"; }
+trap cleanup_and_die INT
 
-
-trap ctrl_c INT
-function ctrl_c() {
+cleanup_and_die() {
   if [[ -f $IN_PROGRESS ]] && [[ $(stat -c %s $IN_PROGRESS) -eq 0 ]]; then
     echo "Deleting $IN_PROGRESS"
     rm $IN_PROGRESS
   fi
+  die "$@"
 }
+
+yell() { echo "$0: $*" >&2; }
+die() { yell "$*"; exit 111; }
+try() { "$@" || cleanup_and_die "cannot $*"; }
 
 usage () {
   echo "Usage: $0 [-s skip]" 1>&2
@@ -57,7 +58,7 @@ render () {
       echo "Starting $1"
       # Touch the output file so other nodes don't attempt it
       touch movies/$1.avi
-      $IN_PROGRESS=movies/$1.avi
+      IN_PROGRESS=movies/$1.avi
       # Make stills out of the animated flame file, first the first part of the animation
       mkdir -p frames/$1/ 
 
@@ -91,6 +92,11 @@ for FLAME in $FLAME_LIST; do
   echo '</flames>' >> tmp.flame
 
   BOTH_ID=${OLD_ID}_${ID}
+
+  
+  if [[ -f movies/$ID.avi ]] && [[ -f movies/$BOTH_ID.avi ]]; then
+    continue
+  fi
 
   # Create a new flame file with enough frames to loop
   try env template=anim_template.flame sequence=tmp.flame nframes=$NFRAMES flam3-genome  > animated_genomes/$BOTH_ID.flame
