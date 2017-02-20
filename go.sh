@@ -71,6 +71,7 @@ render () {
 
       try env in=animated_genomes/$2.flame prefix=frames/$1/ format=jpg jpeg=95 begin=$START end=$4 flam3-animate
       try mencoder mf://frames/$1/*.jpg -mf w=$W:h=$H:fps=$FPS:type=jpg -ovc copy -oac copy -o movies/$1.avi
+      cp frames/$1/ movies/frames/$1
       rm -rf frames/$1/
     fi
   fi
