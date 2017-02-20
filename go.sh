@@ -62,7 +62,14 @@ render () {
       # Make stills out of the animated flame file, first the first part of the animation
       mkdir -p frames/$1/ 
 
-      try env in=animated_genomes/$2.flame prefix=frames/$1/ format=jpg jpeg=95 begin=$3 end=$4 flam3-animate
+      START=$3
+
+      while [[ -f frames/$1/$(printf "%05d" $START).jpg ]]; do
+        echo "Skipping frame $START"
+        START=$(($START+1))
+      done
+
+      try env in=animated_genomes/$2.flame prefix=frames/$1/ format=jpg jpeg=95 begin=$START end=$4 flam3-animate
       try mencoder mf://frames/$1/*.jpg -mf w=$W:h=$H:fps=$FPS:type=jpg -ovc copy -oac copy -o movies/$1.avi
       rm -rf frames/$1/
     fi
