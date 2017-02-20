@@ -7,7 +7,7 @@ trap cleanup_and_die INT
 cleanup_and_die() {
   if [[ -f $IN_PROGRESS ]] && [[ $(stat -c %s $IN_PROGRESS) -eq 0 ]]; then
     echo "Deleting $IN_PROGRESS"
-    echo "$(date +'%Y-%m-%d %H:%M:%S') %(hostname) Aborting $IN_PROGRESS" >> movies/credit.txt
+    echo "$(date +'%Y-%m-%d %H:%M:%S') $(hostname) Aborting $IN_PROGRESS" >> movies/credit.txt
     rm $IN_PROGRESS
   fi
   die "$@"
@@ -60,7 +60,7 @@ render () {
       # Touch the output file so other nodes don't attempt it
       touch movies/$1.avi
       IN_PROGRESS=movies/$1.avi
-      echo "$(date +'%Y-%m-%d %H:%M:%S') %(hostname) Starting $1" >> movies/credit.txt
+      echo "$(date +'%Y-%m-%d %H:%M:%S') $(hostname) Starting  $1" >> movies/credit.txt
       # Make stills out of the animated flame file, first the first part of the animation
       mkdir -p frames/$1/ 
 
@@ -73,7 +73,7 @@ render () {
 
       try env in=animated_genomes/$2.flame prefix=frames/$1/ format=jpg jpeg=95 begin=$START end=$4 flam3-animate
       try mencoder mf://frames/$1/*.jpg -mf w=$W:h=$H:fps=$FPS:type=jpg -ovc copy -oac copy -o movies/$1.avi
-      echo "$(date +'%Y-%m-%d %H:%M:%S') %(hostname) Finishing $1" >> movies/credit.txt
+      echo "$(date +'%Y-%m-%d %H:%M:%S') $(hostname) Finishing $1" >> movies/credit.txt
       cp -R frames/$1/ movies/frames/$1
       rm -rf frames/$1/
     fi
