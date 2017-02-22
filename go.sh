@@ -74,7 +74,7 @@ render () {
       try env in=animated_genomes/$2.flame prefix=frames/$1/ format=jpg jpeg=95 begin=$START end=$4 flam3-animate
       try mencoder mf://frames/$1/*.jpg -mf w=$W:h=$H:fps=$FPS:type=jpg -ovc copy -oac copy -o movies/$1.avi
       echo "$(date +'%Y-%m-%d %H:%M:%S') $(hostname) Finishing $1" >> movies/credit.txt
-      cp -Rn frames/$1/ movies/frames/$1
+      cp -Rn frames/$1/ movies/frames/
       rm -rf frames/$1/
     fi
   fi
