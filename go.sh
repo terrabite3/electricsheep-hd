@@ -126,10 +126,9 @@ for FLAME in $FLAME_LIST; do
   # Create a new flame file with enough frames to loop
   try env template=anim_template.flame sequence=tmp.flame nframes=$NFRAMES flam3-genome  > animated_genomes/$BOTH_ID.flame
 
-  END=$(($NFRAMES + $NFRAMES))
-  render $BOTH_ID  $BOTH_ID  $NFRAMES  $END 
+  render $BOTH_ID  $BOTH_ID  $NFRAMES  $NFRAMES*2
 
-  render $ID  $BOTH_ID  0  $NFRAMES
+  render $ID  $BOTH_ID  $NFRAMES*2  $NFRAMES*3
 
   rm animated_genomes/$BOTH_ID.flame
 
