@@ -82,7 +82,7 @@ render () {
 
 
 # We should already have mounted the NFS share
-[ ! -d movies ] && echo 'movies share not created' && exit 1
+[ -z "$(ls movies)" ] && echo 'movies share not mounted' && exit 1
 #mkdir movies 2>/dev/null
 mkdir animated_genomes 2>/dev/null
 
