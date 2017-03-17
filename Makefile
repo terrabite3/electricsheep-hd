@@ -2,7 +2,7 @@ default:
 	bash go.sh
 
 install_dependencies:
-	sudo apt-get install mencoder
+	sudo apt-get -y install mencoder
 	./make_latest_flam3.sh
 
 clean:
