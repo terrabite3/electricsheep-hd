@@ -2,7 +2,9 @@
 #
 #
 
-echo "#EXTM3U" > movies/playlist.m3u
+PLAYLIST=movies/playlist.m3u
+
+echo "#EXTM3U" > $PLAYLIST
 
 FLAME_LIST=genomes/*.flam3
 # Set the last flame as the previous to create a loop transition
@@ -14,13 +16,13 @@ for FLAME in $FLAME_LIST; do
   ID=`basename $FLAME | sed 's/.flam3//'`
 
   if [[ $OLD_ID != "" ]]; then
-    echo "${OLD_ID}_${ID}.avi" >> movies/playlist.m3u
+    echo "${OLD_ID}_${ID}.avi" >> $PLAYLSIT
   fi
   
-  echo "$ID.avi" >> movies/playlist.m3u
-  echo "$ID.avi" >> movies/playlist.m3u
-  echo "$ID.avi" >> movies/playlist.m3u
-  
+  echo "$ID.avi" >> $PLAYLIST
+  echo "$ID.avi" >> $PLAYLIST
+  echo "$ID.avi" >> $PLAYLIST
+
   OLD_ID=$ID
 
 done
