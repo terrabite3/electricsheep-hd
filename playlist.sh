@@ -16,7 +16,7 @@ for FLAME in $FLAME_LIST; do
   ID=`basename $FLAME | sed 's/.flam3//'`
 
   if [[ $OLD_ID != "" ]]; then
-    echo "${OLD_ID}_${ID}.avi" >> $PLAYLSIT
+    echo "${OLD_ID}_${ID}.avi" >> $PLAYLIST
   fi
   
   echo "$ID.avi" >> $PLAYLIST
